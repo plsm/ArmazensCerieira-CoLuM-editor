@@ -44,6 +44,7 @@ CREATE TABLE ponto (
   maquina_ID INT NOT NULL,
   produto_ID INT NOT NULL,
   quantidade REAL NOT NULL,
+  tempo_lubrificar INT NOT NULL,
   FOREIGN KEY (rfid) REFERENCES tag_RFID (ID) ON DELETE CASCADE,
   FOREIGN KEY (maquina_ID) REFERENCES maquina (ID) ON DELETE CASCADE,
   FOREIGN KEY (produto_ID) REFERENCES produto (ID) ON DELETE CASCADE
