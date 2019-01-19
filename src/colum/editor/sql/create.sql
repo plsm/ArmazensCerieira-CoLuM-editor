@@ -104,7 +104,7 @@ CREATE TABLE paragem (
 CREATE INDEX paragem_percurso ON paragem (percurso_ID);
 
 CREATE TABLE paragem_ponto (
-  paragem_ID INT NOT NULL,
+  paragem_ID INTEGER PRIMARY KEY NOT NULL,
   ponto_ID  INT NOT NULL,
   FOREIGN KEY (paragem_ID) REFERENCES paragem (ID) ON DELETE CASCADE,
   FOREIGN KEY (ponto_ID) REFERENCES ponto (ID) ON DELETE CASCADE
@@ -112,12 +112,30 @@ CREATE TABLE paragem_ponto (
 
 CREATE INDEX paragem_ponto_pp ON paragem_ponto (paragem_ID, ponto_ID);
 
+CREATE VIEW detalhe_paragem_ponto (ID, percurso_ID, ordem, ponto_ID) AS
+	SELECT
+		paragem.ID,
+		paragem.percurso_ID,
+		paragem.ordem,
+		paragem_ponto.ponto_ID
+	FROM paragem
+		INNER JOIN paragem_ponto ON paragem.ID = paragem_ponto.paragem_ID;
+
 CREATE TABLE paragem_maquina (
-  paragem_ID INT NOT NULL,
+  paragem_ID INTEGER PRIMARY KEY NOT NULL,
   maquina_ID INT NOT NULL,
   FOREIGN KEY (paragem_ID) REFERENCES paragem (ID) ON DELETE CASCADE,
   FOREIGN KEY (maquina_ID) REFERENCES ponto (ID) ON DELETE CASCADE
 );
+
+CREATE VIEW detalhe_paragem_maquina (ID, percurso_ID, ordem, maquina_ID) AS
+	SELECT
+		paragem.ID,
+		paragem.percurso_ID,
+		paragem.ordem,
+		paragem_maquina.maquina_ID
+	FROM paragem
+		INNER JOIN paragem_maquina ON paragem.ID = paragem_maquina.paragem_ID;
 
 CREATE INDEX paragem_maquina_pm ON paragem_maquina (paragem_ID, maquina_ID);
 
