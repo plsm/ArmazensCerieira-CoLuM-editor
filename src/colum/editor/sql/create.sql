@@ -196,7 +196,7 @@ CREATE TABLE execucao (
 CREATE INDEX execucao_percurso ON execucao (percurso_ID);
 CREATE INDEX execucao_operador ON execucao (operador_ID);
 
-CREATE TABLE accao (
+CREATE TABLE accao_escalonada (
   ID INTEGER PRIMARY KEY ASC NOT NULL,
   execucao_ID INT NOT NULL,
   paragem_ID INT NOT NULL,
@@ -205,8 +205,8 @@ CREATE TABLE accao (
   FOREIGN KEY (paragem_ID) REFERENCES paragem (ID) ON DELETE CASCADE
 );
 
-CREATE INDEX accao_execucao ON accao (execucao_ID);
-CREATE INDEX accao_paragem ON accao (paragem_ID);
+CREATE INDEX accao_execucao ON accao_escalonada (execucao_ID);
+CREATE INDEX accao_paragem ON accao_escalonada (paragem_ID);
 
 CREATE TABLE lubrificacao (
   accao_ID INTEGER PRIMARY KEY NOT NULL,
@@ -222,6 +222,28 @@ CREATE TABLE nao_lubrificado (
 );
 
 CREATE INDEX nao_lubrificado_justificacao ON nao_lubrificado (justificacao_ID);
+
+CREATE TABLE accao_nao_prevista (
+  ID INTEGER PRIMARY KEY ASC NOT NULL,
+  execucao_ID INT NOT NULL,
+  data_hora TEXT DEFAULT CURRENT_TIMESTAMP,
+  quantidade REAL NOT NULL,
+  FOREIGN KEY (execucao_ID) REFERENCES execucao (ID) ON DELETE CASCADE
+);
+
+CREATE TABLE accao_nao_prevista_ponto (
+  accao_nao_prevista_ID INTEGER PRIMARY KEY NOT NULL,
+  ponto_ID  INT NOT NULL,
+  FOREIGN KEY (accao_nao_prevista_ID) REFERENCES accao_nao_prevista (ID) ON DELETE CASCADE,
+  FOREIGN KEY (ponto_ID) REFERENCES ponto (ID) ON DELETE CASCADE
+);
+
+CREATE TABLE accao_nao_prevista_maquina (
+  accao_nao_prevista_ID INTEGER PRIMARY KEY NOT NULL,
+  maquina_ID INT NOT NULL,
+  FOREIGN KEY (accao_nao_prevista_ID) REFERENCES accao_nao_prevista (ID) ON DELETE CASCADE,
+  FOREIGN KEY (maquina_ID) REFERENCES ponto (ID) ON DELETE CASCADE
+);
 
 CREATE VIEW detalhe_execucao (nome, operador_escalonado, ordem, tipo_paragem, nome_paragem, data_hora_arranque, data_hora_accao) AS
 /*  SELECT
